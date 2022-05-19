@@ -1,0 +1,45 @@
+{% extends "forum/base.html" %}
+
+{% block title %}
+<title>{{ page_user }}</title>
+{% endblock %}
+
+{% load static %}
+{% block content %}
+
+    <div class="header-bar">
+        <h1>Профиль</h1><br><br>
+    </div>
+
+    <div class="card-body">
+    {% if profile.profile_pic %}
+      <img src="{{ profile.profile_pic.url }}" height=100 width=100 class="round" alt=""><br><br>
+    {% else %}
+      <img src="{% static 'media/images/profile/user.png' %}" height=100 width=100 class="round" alt=""><br><br>
+    {% endif %}
+      <p><strong>Имя:</strong> {{ profile.first_name }}</p>
+      <p><strong>Фамилия:</strong> {{ profile.last_name }}</p>
+      <p><strong>О себе:</strong> {{ profile.bio }}</p><br>
+      {% if profile.twitter %}
+      <p><strong>Twitter:</strong> {{ profile.twitter }}</p><br><br>
+      {% endif %}
+      {% if profile.instagram %}
+      <p><strong>Instagram:</strong> {{ profile.instagram }}</p><br><br>
+      {% endif %}
+      {% if profile.facebook %}
+      <p><strong>Facebook:</strong> {{ profile.facebook }}</p><br><br>
+      {% endif %}
+
+        {% if user.is_authenticated %}
+            {% if user.id == profile.user.id %}
+                <a href="{% url 'update_user_profile' user.profile.id %}" class="green">Изменить</a>
+            {% else %}
+                <a href="{% url 'send_request' user.id profile.user.id %}?next={{request.path}}" class="green">Добавить в друзья</a>
+            {% endif %}
+        {% endif %}
+
+
+
+    </div>
+
+{% endblock content %}

@@ -1,0 +1,23 @@
+{% extends "forum/base.html" %}
+
+{% block title %}
+<title>Create Profile</title>
+{% endblock %}
+
+{% block content %}
+    {% if request.user.is_authenticated %}
+        {% if not request.user.profile %}
+        <div class="card-body">
+        <form method="post" action="" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{form.as_p}}
+            <button type="submit" class="btn btn-success">Добавить</button>
+        </form>
+        </div>
+        {% else %}
+        <p>у вас уже есть профиль</p>
+        {% endif %}
+    {% else %}
+    <a href="{% url 'login' %}">Login</a>
+{% endif %}
+{% endblock content %}

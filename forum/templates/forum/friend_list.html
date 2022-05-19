@@ -1,0 +1,27 @@
+{% extends "forum/base.html" %}
+
+{% block title %}
+<title>Друзья</title>
+{% endblock %}
+
+{% load static %}
+{% block content %}
+    <h1>Список друзей</h1>
+    <br><br>
+    {% if user_list %}
+    <ul>
+      {% for user in user_list %}
+        {% if user.profile %}
+        {% if user.profile.profile_pic %}
+          <img src="{{ user.profile.profile_pic.url }}" height=30 width=30 class="round" alt="">
+        {% else %}
+          <img src="{% static 'media/images/profile/user.png' %}" height=30 width=30 class="round" alt="">
+        {% endif %}
+        <a href="{% url 'user_profile' user.profile.id %}">{{user.profile.first_name}} {{user.profile.last_name}}</a><br><br>
+        {% endif %}
+        {% endfor %}
+    </ul>
+    {% else %}
+      <p>Таких друзей нет</p>
+    {% endif %}
+{% endblock content %}

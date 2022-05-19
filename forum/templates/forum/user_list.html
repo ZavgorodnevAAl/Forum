@@ -1,0 +1,28 @@
+{% extends "forum/base.html" %}
+
+{% block title %}
+<title>Пользователи</title>
+{% endblock %}
+
+{% load static %}
+{% block content %}
+    <h1>Список пользователей</h1><br><br>
+    <form action="{% url 'all_users' %}" method="get">
+        <input name="q" type="text" placeholder="Search...">
+    </form>
+    <br>
+    {% if profile_list %}
+    <ul>
+      {% for profile in profile_list %}
+        {% if profile.profile_pic %}
+          <img src="{{ profile.profile_pic.url }}" height=30 width=30 class="round" alt="">
+        {% else %}
+          <img src="{% static 'media/images/profile/user.png' %}" height=30 width=30 class="round" alt="">
+        {% endif %}
+        <a href="{% url 'user_profile' profile.id %}">{{profile.first_name}} {{profile.last_name}}</a><br><br>
+        {% endfor %}
+    </ul>
+    {% else %}
+      <p>Пользователей нет</p>
+    {% endif %}
+{% endblock content %}

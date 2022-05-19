@@ -1,0 +1,27 @@
+{% extends "forum/base.html" %}
+
+{% block title %}
+<title>Friend Requests</title>
+{% endblock %}
+
+{% load static %}
+{% block content %}
+    <h1>Заявки в друзья</h1><br><br>
+    {% if friendrequest_list %}
+    <ul>
+      {% for friendreq in friendrequest_list %}
+        {% if friendreq.sender.profile.profile_pic %}
+          <img src="{{ friendreq.sender.profile.profile_pic.url }}" height=30 width=30 class="round" alt="">
+        {% else %}
+          <img src="{% static 'media/images/profile/user.png' %}" height=30 width=30 class="round" alt="">
+        {% endif %}
+        <a href="{% url 'user_profile' friendreq.sender.id %}?next={{request.path}}">
+        {{friendreq.sender.profile.first_name}} {{friendreq.sender.profile.last_name}}</a>
+        <a href="{% url 'change_friend' 'add' friendreq.id %}" class="green">принять</a>
+        <a href="{% url 'change_friend' 'nothing' friendreq.id %}" class="red">отклонить</a><br><br>
+      {% endfor %}
+    </ul>
+    {% else %}
+      <p>Нет заявок в друзья</p>
+    {% endif %}
+{% endblock content %}
