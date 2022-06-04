@@ -12,14 +12,18 @@
     </form>
     <br>
     {% if profile_list %}
-    <ul>
+    <ul class="list-group">
       {% for profile in profile_list %}
+        <ul class="list-group-item">
+            <h3>
         {% if profile.profile_pic %}
           <img src="{{ profile.profile_pic.url }}" height=30 width=30 class="round" alt="">
         {% else %}
           <img src="{% static 'media/images/profile/user.png' %}" height=30 width=30 class="round" alt="">
         {% endif %}
-        <a href="{% url 'user_profile' profile.id %}">{{profile.first_name}} {{profile.last_name}}</a><br><br>
+                </h3>
+        <h2><a href="{% url 'user_profile' profile.id %}" class="no-decoration">{{profile.first_name}} {{profile.last_name}}</a></h2>
+        </ul>
         {% endfor %}
     </ul>
     {% else %}

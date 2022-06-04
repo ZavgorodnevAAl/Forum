@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  {% block title %}<title>Local Library</title>{% endblock %}
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
+  {% block title %}<title>Forum</title>{% endblock %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
   <!-- Добавление дополнительного статического CSS файла -->
   {% load static %}
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
@@ -18,108 +15,113 @@
 </head>
 
 <body>
-	<div id="wrapper">
+    <div id="wrapper">
         <nav>
-        <ul class="top-menu">
-            <li><a href="{% url 'home' %}">HOME</a></li>
-        </ul>
-        </nav>
-		<aside>
-        <nav>
-                {% block sidebar %}
-            <ul class="aside-menu">
-          </ul>
-           {% if user.is_authenticated %}
-            <hr>
-            <li><font color="green">Пользователь:</font> {{ user.get_username }}</li>
-
-            {% if user.profile %}
-            <li><a href="{% url 'user_profile' user.profile.id %}">Профиль</a></li>
-            {% else %}
-            <li><a href="{% url 'create_user_profile' %}">Создать профиль</a></li>
-            {% endif %}
-
-            <li><a href="{% url 'logout'%}?next={% url 'home' %}"><font color="red">Выйти</font></a></li>
-
-            {% if user.profile %}
-            <hr>
-            <li><a href="{% url 'user_friend_requests'%}">Заявки</a></li>
-            <hr>
-            <li><a href="{% url 'friends'%}">Друзья</a></li>
-            <li><a href="{% url 'all_users'%}">Все пользователи</a></li>
-            {% endif %}
-
-            {% if user.is_staff %}
-            <hr>
-            staff
-            {% endif %}
-          {% else %}
-            <li><a href="{% url 'login'%}?next={{request.path}}">Войти</a></li>
-          {% endif %}
-          {% endblock %}
+            <ul class="top-menu">
+                <li><a href="{% url 'home' %}">HOME</a></li>
             </ul>
         </nav>
+		<aside>
+            <nav>
+                {% block sidebar %}
+                <ul class="aside-menu">
+                </ul>
+                {% if user.is_authenticated %}
+                <hr>
+                <li><font color="green">Пользователь:</font> {{ user.get_username }}</li>
+
+                {% if user.profile %}
+                <li><a href="{% url 'user_profile' user.profile.id %}">Профиль</a></li>
+                {% else %}
+                <li><a href="{% url 'create_user_profile' %}">Создать профиль</a></li>
+                {% endif %}
+
+                <li><a href="{% url 'my_posts' %}">Мои посты</a></li>
+
+                <li><a href="{% url 'logout'%}?next={% url 'home' %}"><font color="red">Выйти</font></a></li>
+
+                {% if user.profile %}
+                <hr>
+                <li><a href="{% url 'user_friend_requests'%}">Заявки</a></li>
+                <hr>
+                <li><a href="{% url 'friends'%}">Друзья</a></li>
+                <li><a href="{% url 'all_users'%}">Все пользователи</a></li>
+                {% endif %}
+
+                {% if user.is_staff %}
+                <hr>
+                staff
+                {% endif %}
+                {% else %}
+                <li><a href="{% url 'login'%}?next={{request.path}}">Войти</a></li>
+                {% endif %}
+                {% endblock %}
+            </nav>
         </aside>
 
 		<section>
-        <div class="container-fluid">
+        <div class="container-fluid" style="min-height: 350px">
             <div class="row">
             <div class="col-sm-2">
 
-      </div>
-      <div class="col-sm-10 ">
-          {% block content %}{% endblock %}
+            </div>
+                <div class="col-sm-10 ">
+                    {% block content %}{% endblock %}
 
-          {% block pagination %}
-          {% if is_paginated %}
-              <div class="pagination">
-                  <span class="page-links">
-                      {% if page_obj.has_previous %}
-                          <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">назад</a>
-                      {% endif %}
-                      <span class="page-current">
-                          Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
-                      </span>
-                      {% if page_obj.has_next %}
-                          <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">вперед</a>
-                      {% endif %}
-                  </span>
-              </div>
-          {% endif %}
-          {% endblock %}
-      </div>
-    </div>
-    </div>
+                    {% block pagination %}
+                    {% if is_paginated %}
+                    <div class="pagination">
+                        <span class="page-links">
+                            {% if page_obj.has_previous %}
+                            <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">назад</a>
+                            {% endif %}
+                            <span class="page-current">
+                                Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+                            </span>
+                            {% if page_obj.has_next %}
+                            <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">вперед</a>
+                            {% endif %}
+                        </span>
+                    </div>
+                    {% endif %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
         </section>
-	</div>
-	<footer>
-	<div id="footer">
-        <div id="twitter">
-	<h3>ABOUT</h3>
-	<time datetime="2022-05-16"><a href="#">16 may</a></time>
-    <p>
-	Меня зовут Артем Завгороднев, я студент 1 курса ДВФУ, Прикладная математика и информатика. И этот сайт - моё домашнее задание.
-    </p>
     </div>
-
-        <div id="sitemap">
-	<h3>SITEMAP</h3>
-	<div>
-		<a href="/">Home</a>
-		<a href="/">About</a>
-		<a href="/">Services</a>
-	</div>
-	<div>
-		<a href="/">Partners</a>
-		<a href="/">Support</a>
-		<a href="/">Contact</a>
-	</div>
-    </div>
-    <div id="footer-logo">
-	    <p>Copyright © 2022 HellaWaits. <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Artem's</a> creation</p>
-    </div>
-	</div>
+    <footer class="text-center text-lg-start bg-light text-muted navbar-fixed-bottom">
+      <!-- Section: Links  -->
+        <div class="text-center p-1" style="background-color: rgba(0, 0, 0, 0.05);">
+            <div class="container text-center text-md-start mt-5">
+            <!-- Grid row -->
+                <div class="row mt-3">
+                    <!-- Grid column -->
+                    <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
+                        <!-- Content -->
+                        <h6 class="text-uppercase fw-bold mb-4">
+                            <i class="fas fa-gem me-3"></i>ABOUT
+                        </h6>
+                        <p>
+                            Меня зовут Артем Завгороднев, я студент 1 курса ДВФУ, Прикладная математика и информатика. И этот сайт - моё домашнее задание.
+                        </p>
+                    </div>
+                    <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
+                        <h6 class="text-uppercase fw-bold mb-4">
+                            Contact
+                        </h6>
+                        <p><i class="fas fa-home me-3"></i> Russia, VL</p>
+                        <p>
+                            <i class="fas fa-envelope me-3"></i>
+                            zavgorodnev.artem@gmail.com
+                        </p>
+                        <p><i class="fas fa-phone me-3"></i> +7 (999) 05-70-617</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </footer>
+<!-- Footer -->
 </body>
 </html>
 

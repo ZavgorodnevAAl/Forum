@@ -1,13 +1,14 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AnonymousUser
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 
-from .forms import UserRegistrationForm
-from .models import Profile, FriendRequest, Friend
+from .forms import UserRegistrationForm, ProfileUpdateForm, PostForm
+from .models import Profile, FriendRequest, Friend, Post
 from django.views.generic import DetailView, UpdateView, DeleteView, ListView, CreateView
 
+from datetime import date
 
 # Create your views here.
 def index(request):
@@ -33,7 +34,7 @@ class CreateProfilePageView(CreateView):
     model = Profile
 
     template_name = 'forum/create_profile.html'
-    fields = ['profile_pic', 'first_name', 'last_name', 'bio', 'facebook', 'twitter', 'instagram']
+    form_class = ProfileUpdateForm
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -44,9 +45,10 @@ class CreateProfilePageView(CreateView):
 
 class UpdateProfilePageView(UpdateView):
     model = Profile
+    form_class = ProfileUpdateForm
 
     template_name = 'forum/update_profile.html'
-    fields = ['profile_pic', 'first_name', 'last_name', 'bio', 'facebook', 'twitter', 'instagram']
+    #fields = ['profile_pic', 'first_name', 'last_name', 'bio', 'facebook', 'twitter', 'instagram']
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -56,7 +58,6 @@ class UpdateProfilePageView(UpdateView):
 
 
 def send_request(request, spk, rpk):
-    print(request.user.profile.first_name)
     if request.user.id == int(spk) and spk != rpk:
         recipient = User.objects.get(pk=int(rpk))
         if (FriendRequest.objects.filter(recipient=recipient, sender=request.user)):
@@ -80,12 +81,14 @@ def change_friend(request, operation, pk):
     friend = req.sender
     if operation == 'add':
         Friend.make_friend(friend, request.user)
-    elif operation == 'remove':
-        Friend.lose_friend(friend, request.user)
-        req.delete()
-        return redirect('friends')
     req.delete()
     return redirect('user_friend_requests')
+
+
+def remove_friend(request, pk):
+    friend = User.objects.get(pk=pk)
+    Friend.lose_friend(friend, request.user)
+    return redirect('friends')
 
 
 class AllUserList(ListView):
@@ -103,6 +106,7 @@ class AllUserList(ListView):
 
 class FriendList(ListView):
     model = Profile
+
     template_name = 'forum/friend_list.html'
     paginate_by = 5
 
@@ -125,3 +129,72 @@ def register(request):
     else:
         user_form = UserRegistrationForm()
     return render(request, 'registration/register.html', {'user_form': user_form})
+
+
+class CreatePost(CreateView):
+    model = Post
+
+    template_name = 'forum/create_post.html'
+    form_class = PostForm
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.current_user = self.request.user
+        obj.date = date.today()
+        obj.save()
+        return super().form_valid(form)
+
+    success_url = reverse_lazy('my_posts')
+
+
+class UpdatePost(UpdateView):
+    model = Post
+
+    template_name = 'forum/update_post.html'
+    form_class = PostForm
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.date = date.today()
+        obj.save()
+        return super().form_valid(form)
+
+    success_url = reverse_lazy('my_posts')
+
+
+class DeletePost(DeleteView):
+    model = Post
+
+    success_url = reverse_lazy('my_posts')
+
+
+class MyPostsList(ListView):
+    model = Post
+    template_name = 'forum/my_posts.html'
+    paginate_by = 3
+
+    def get_queryset(self):
+        return Post.objects.filter(current_user=self.request.user).order_by('-date')
+
+
+class UserPostsList(ListView):
+    model = Post
+    template_name = 'forum/user_posts.html'
+    paginate_by = 3
+
+    def get_queryset(self):
+        user = User.objects.get(pk=int(self.kwargs['pk']))
+        return Post.objects.filter(current_user=user).order_by('-date')
+
+
+class FriendsPostList(ListView):
+    model = Post
+    template_name = 'forum/fiends_posts.html'
+    paginate_by = 3
+
+    def get_queryset(self):
+        user = self.request.user
+        try:
+            return Post.objects.filter(current_user__in=Friend.objects.get(current_user=user).users.all()).order_by('-date')
+        except:
+            return ''

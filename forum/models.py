@@ -50,8 +50,16 @@ class Friend(models.Model):
         new_friend, new_created = cls.objects.get_or_create(
             current_user=ex_friend
         )
-        new_friend.users.remove(ex_friend)
+        new_friend.users.remove(current_user)
+
 
 class FriendRequest(models.Model):
     sender = models.ForeignKey(User, related_name='sender', on_delete=models.CASCADE)
     recipient = models.ForeignKey(User, related_name='recipient', on_delete=models.CASCADE)
+
+
+class Post(models.Model):
+    current_user = models.ForeignKey(User, related_name='post_owner', null=True, on_delete=models.CASCADE)
+    head = models.CharField("Заголовок", max_length=100)
+    text = models.TextField("Текст", null=True, blank=True)
+    date = models.DateField(null=True, blank=True)

@@ -1,23 +1,22 @@
 {% extends "forum/base.html" %}
 
 {% block title %}
-<title>Update Profile</title>
+<title>Create Post</title>
 {% endblock %}
 
 {% block content %}
     <div class="header-bar">
-        <h1>Редактирование профиля</h1><br><br>
+        <h1>Создание поста</h1><br><br>
     </div>
-
     {% if request.user.is_authenticated %}
-        <div class="form_group">
+        <div class="card-body">
         <form method="post" action="" enctype="multipart/form-data">
             {% csrf_token %}
             {{form.as_p}}
-            <button type="submit" class="btn btn-success">Добавить</button>
+            <button type="submit" class="btn btn-success">Опубликовать</button>
         </form>
         </div>
     {% else %}
-    <a href="{% url 'login' %}">Login</a>
+    <a href="{% url 'login' %}" class="green">Login</a>
 {% endif %}
 {% endblock content %}

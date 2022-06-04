@@ -5,8 +5,8 @@
 {% block content %}
     <h1>Регистрация</h1><br><br>
     <form action="." method="post">
-        {{ user_form.as_p }}
         {% csrf_token %}
-        <p><input type="submit" value="Create my account"></p>
+        {{ user_form.as_p }}
+        <p><input type="submit" value="Create my account" class="btn btn-secondary"></p>
     </form>
 {% endblock %}
