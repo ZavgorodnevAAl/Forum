@@ -15,7 +15,7 @@
             <ul class="list-group-item">
         <h4><a href="{% url 'user_profile' user.profile.id %}" class="no-decoration">{{user.profile.first_name}} {{user.profile.last_name}}</a></h4>
         {% if user.profile.profile_pic %}
-          <img src="{{ user.profile.profile_pic.url }}" height=30 width=30 class="round" alt="">
+          <img src="{{ user.profile.avatar_thumbnail.url }}" height=30 width=30 class="round" alt="">
         {% else %}
           <img src="{% static 'media/images/profile/user.png' %}" height=30 width=30 class="round" alt="">
         {% endif %}

@@ -8,18 +8,24 @@
 {% block content %}
     <h1>Заявки в друзья</h1><br><br>
     {% if friendrequest_list %}
-    <ul>
+    <ul class="list-group">
       {% for friendreq in friendrequest_list %}
+        <ul class="list-group-item">
+            <h3>
         {% if friendreq.sender.profile.profile_pic %}
-          <img src="{{ friendreq.sender.profile.profile_pic.url }}" height=30 width=30 class="round" alt="">
+          <img src="{{ friendreq.sender.profile.avatar_thumbnail.url }}" height=40 width=40 class="round" alt="">
         {% else %}
           <img src="{% static 'media/images/profile/user.png' %}" height=30 width=30 class="round" alt="">
         {% endif %}
-        <a href="{% url 'user_profile' friendreq.sender.id %}?next={{request.path}}">
+            </h3>
+            <h2>
+        <a href="{% url 'user_profile' friendreq.sender.id %}?next={{request.path}}" class="no-decoration">
         {{friendreq.sender.profile.first_name}} {{friendreq.sender.profile.last_name}}</a>
-        <a href="{% url 'change_friend' 'add' friendreq.id %}" class="green">принять</a>
-        <a href="{% url 'change_friend' 'nothing' friendreq.id %}" class="red">отклонить</a><br><br>
-      {% endfor %}
+            </h2>
+            <a href="{% url 'change_friend' 'add' friendreq.id %}" class="green">принять</a>
+        <a href="{% url 'change_friend' 'nothing' friendreq.id %}" class="red">отклонить</a>
+        </ul>
+        {% endfor %}
     </ul>
     {% else %}
       <p>Нет заявок в друзья</p>

@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-# Create your models here.
+from imagekit.models import ImageSpecField
+from imagekit.processors import ResizeToFill
 
 
 class Profile(models.Model):
@@ -9,6 +10,10 @@ class Profile(models.Model):
     first_name = models.CharField("first name", max_length=100)
     last_name = models.CharField("last name", max_length=100)
     profile_pic = models.ImageField(null=True, blank=True, upload_to="images/profile/")
+    avatar_thumbnail = ImageSpecField(source='profile_pic',
+                                      processors=[ResizeToFill(512, 512)],
+                                      format='JPEG',
+                                      options={'quality': 100})
     date_of_birth = models.DateField(null=True, blank=True)
     bio = models.TextField(null=True, blank=True)
     facebook = models.CharField(max_length=50, null=True, blank=True)

@@ -17,7 +17,7 @@
         <ul class="list-group-item">
             <h3>
         {% if profile.profile_pic %}
-          <img src="{{ profile.profile_pic.url }}" height=30 width=30 class="round" alt="">
+          <img src="{{ profile.avatar_thumbnail.url }}" height=40 width=40 class="round" alt="">
         {% else %}
           <img src="{% static 'media/images/profile/user.png' %}" height=30 width=30 class="round" alt="">
         {% endif %}
